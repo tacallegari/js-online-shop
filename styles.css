@@ -1,0 +1,28 @@
+ /* Reset default margins and ensure full screen height */
+        html, body {
+            margin: 0px;
+            padding: 0px;
+            height: 100%;
+        }
+
+        /* Create a full-screen flexbox container */
+        .title-page-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            /* height: 100vh; */
+            text-align: center;
+            background-color: #f9f9f9;
+        }
+
+        /* Optional custom styling for the title typography */
+       /* .title-page-container h1 {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        .title-page-container p {
+            font-size: 1.5rem;
+            color: #555;
+        }
