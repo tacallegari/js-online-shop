@@ -1,47 +1,11 @@
+import { products } from "./products.js";
+import { cart, addToCart } from "./cart.js";
 
-const products = [
-    {
-        productName: "Gothic Black Hoodie",
-        price: 49.99,
-        category: "Clothing",
-        inStock: true
-    },
-    {
-        productName: "Black Platform Sneakers",
-        price: 59.99,
-        category: "Footwear",
-        inStock: true
-    },
-    {
-        productName: "Running Shoes",
-        price: 74.99,
-        category: "Footwear",
-        inStock: true
-    },
-    {
-        productName: "Gluten Free Chocolate Cookies",
-        price: 4.99,
-        category: "Food item",
-        inStock: true
-    },
-    {
-        productName: "Potato Chips",
-        price: 3.49,
-        category: "Food item",
-        inStock: false
-    }
-];
-
-const cart = [];
-
-// Render product cards dynamically
+// Render product cards
 function renderProducts(productsToDisplay) {
     const productGrid = document.getElementById("product-grid");
-
-    // Clear existing cards before rendering
     productGrid.innerHTML = "";
 
-    // Create a card for each product
     for (const product of productsToDisplay) {
         const card = document.createElement("div");
         card.classList.add("product-card");
@@ -56,14 +20,22 @@ function renderProducts(productsToDisplay) {
         price.textContent = "Price: $" + product.price.toFixed(2);
 
         const button = document.createElement("button");
-        button.textContent = product.inStock
-            ? "Add to Cart"
-            : "Out of Stock";
-        button.disabled = !product.inStock;
+        button.textContent = "Add to Cart";
 
-        // Call addToCart with this product's name
+        // Handle clicks and display errors in the page
         button.addEventListener("click", function () {
-            addToCart(product.productName);
+            const errorMessage =
+                document.getElementById("error-message");
+
+            try {
+                addToCart(product.productName);
+                errorMessage.textContent = "";
+            } catch (error) {
+                errorMessage.textContent =
+                    "Unable to add item: " + error.message;
+            } finally {
+                updateCart();
+            }
         });
 
         card.appendChild(name);
@@ -75,29 +47,7 @@ function renderProducts(productsToDisplay) {
     }
 }
 
-// Add a product to the shopping cart
-function addToCart(productName) {
-    const product = products.find(
-        item => item.productName === productName
-    );
-
-    if (!product) {
-        console.log("Product not found: - app.js:85", productName);
-        return;
-    }
-
-    if (!product.inStock) {
-        console.log("Sorry, this product is out of stock: - app.js:90", productName);
-        return;
-    }
-
-    cart.push(product);
-    console.log("Product added to cart: - app.js:95", product.productName);
-
-    updateCart();
-}
-
-// Update cart badge, cart items, and total
+// Update the cart badge, items, and total
 function updateCart() {
     const cartCount = document.getElementById("cart-count");
     const cartItems = document.getElementById("cart-items");
@@ -110,6 +60,7 @@ function updateCart() {
 
     for (const item of cart) {
         const cartItem = document.createElement("p");
+
         cartItem.textContent =
             item.productName + " - $" + item.price.toFixed(2);
 
@@ -120,20 +71,23 @@ function updateCart() {
     cartTotal.textContent = total.toFixed(2);
 }
 
-// Render buttons for each product category
+// Render category filter buttons
 function renderCategoryFilters() {
-    const filterContainer = document.getElementById("category-filters");
+    const filterContainer =
+        document.getElementById("category-filters");
+
     filterContainer.innerHTML = "";
 
-    const categories = [...new Set(
-        products.map(product => product.category)
-    )];
+    const categories = [
+        ...new Set(products.map(product => product.category))
+    ];
 
     const allButton = document.createElement("button");
     allButton.textContent = "All Products";
 
     allButton.addEventListener("click", function () {
         renderProducts(products);
+        document.getElementById("error-message").textContent = "";
     });
 
     filterContainer.appendChild(allButton);
@@ -148,13 +102,14 @@ function renderCategoryFilters() {
             );
 
             renderProducts(filteredProducts);
+            document.getElementById("error-message").textContent = "";
         });
 
         filterContainer.appendChild(button);
     }
 }
 
-// Display the products and category filters when the page loads
+// Initialize the store
 renderCategoryFilters();
 renderProducts(products);
 updateCart();

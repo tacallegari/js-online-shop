@@ -261,3 +261,19 @@ button:disabled {
         grid-template-columns: 1fr;
     }
 }
+
+/* Accessible shopper feedback */
+#error-message {
+    color: #b91c1c;
+    background-color: #fef2f2;
+    border-left: 4px solid #dc2626;
+    border-radius: 6px;
+    padding: 0;
+    margin: 0;
+    font-weight: 500;
+}
+
+#error-message:not(:empty) {
+    padding: 0.75rem 1rem;
+    margin-top: 1rem;
+}
